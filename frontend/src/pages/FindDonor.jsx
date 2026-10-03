@@ -50,8 +50,7 @@ function FindDonor() {
       console.log("❌ Donor Search Error:", error);
 
       setMessage(
-        error.response?.data?.message ||
-          "Unable to find donors"
+        error.response?.data?.message || "Unable to find donors"
       );
     } finally {
       setLoading(false);
@@ -166,7 +165,7 @@ function FindDonor() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-16">
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-6">
 
         {/* ===============================
             PAGE HEADER
@@ -177,7 +176,7 @@ function FindDonor() {
         </h1>
 
         <p className="text-center text-gray-600 mb-10">
-          Search available donors near your location.
+          Find available blood donors based on blood group and location.
         </p>
 
         {/* ===============================
@@ -190,10 +189,8 @@ function FindDonor() {
 
             <select
               value={bloodGroup}
-              onChange={(e) =>
-                setBloodGroup(e.target.value)
-              }
-              className="border border-gray-300 p-3 rounded-lg"
+              onChange={(e) => setBloodGroup(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
             >
               <option value="">
                 Select Blood Group
@@ -212,11 +209,9 @@ function FindDonor() {
             <input
               type="text"
               value={city}
-              onChange={(e) =>
-                setCity(e.target.value)
-              }
+              onChange={(e) => setCity(e.target.value)}
               placeholder="Enter City"
-              className="border border-gray-300 p-3 rounded-lg"
+              className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
             />
 
             <button
@@ -224,9 +219,7 @@ function FindDonor() {
               disabled={loading}
               className="bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition disabled:bg-gray-400"
             >
-              {loading
-                ? "Searching..."
-                : "Search Donor"}
+              {loading ? "Finding Matches..." : "Find Best Donors"}
             </button>
 
           </div>
@@ -243,44 +236,155 @@ function FindDonor() {
         )}
 
         {/* ===============================
+            MATCH RESULT HEADER
+        =============================== */}
+
+        {donors.length > 0 && (
+          <div className="flex items-center justify-between mb-6">
+
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                Recommended Donors
+              </h2>
+
+              <p className="text-gray-500 text-sm mt-1">
+                Donors are arranged according to matching factors.
+              </p>
+            </div>
+
+            <div className="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-semibold">
+              {donors.length} Donor{donors.length > 1 ? "s" : ""} Found
+            </div>
+
+          </div>
+        )}
+
+        {/* ===============================
             DONOR CARDS
         =============================== */}
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {donors.map((donor) => (
             <div
               key={donor._id}
-              className="bg-white p-6 rounded-xl shadow-md"
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
             >
 
-              <h2 className="text-xl font-bold">
-                {donor.fullName}
-              </h2>
+              {/* ===============================
+                  MATCH SCORE
+              =============================== */}
 
-              <p className="mt-3">
-                Blood Group:{" "}
-                <span className="text-red-600 font-bold">
-                  {donor.bloodGroup}
-                </span>
-              </p>
+              <div className="bg-red-50 px-5 py-4 flex items-center justify-between">
 
-              <p>
-                Location: {donor.city}
-              </p>
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Smart Match
+                  </p>
 
-              <p className="mt-2 text-green-600 font-semibold">
-                ● Available
-              </p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {donor.matchScore ?? 0}%
+                  </p>
+                </div>
 
-              <button
-                onClick={() =>
-                  handleBloodRequest(donor)
-                }
-                className="mt-4 bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition"
-              >
-                Send Blood Request
-              </button>
+                <div className="text-right">
+                  <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
+                    ● Available
+                  </span>
+                </div>
+
+              </div>
+
+              <div className="p-6">
+
+                {/* DONOR NAME */}
+
+                <h2 className="text-xl font-bold text-gray-800">
+                  {donor.fullName}
+                </h2>
+
+                {/* BLOOD GROUP */}
+
+                <p className="mt-4 text-gray-700">
+                  Blood Group:{" "}
+                  <span className="text-red-600 font-bold text-lg">
+                    {donor.bloodGroup}
+                  </span>
+                </p>
+
+                {/* LOCATION */}
+
+                <p className="mt-2 text-gray-700">
+                  📍 Location:{" "}
+                  <span className="font-semibold">
+                    {donor.city}
+                  </span>
+                </p>
+
+                {/* DONATION STATS */}
+
+                <div className="grid grid-cols-2 gap-3 mt-4">
+
+                  <div className="bg-gray-50 p-3 rounded-lg text-center">
+                    <p className="text-xs text-gray-500">
+                      Donations
+                    </p>
+
+                    <p className="font-bold text-gray-800">
+                      {donor.totalDonations ?? 0}
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 p-3 rounded-lg text-center">
+                    <p className="text-xs text-gray-500">
+                      Points
+                    </p>
+
+                    <p className="font-bold text-gray-800">
+                      {donor.points ?? 0}
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* MATCH REASONS */}
+
+                {donor.matchReasons &&
+                  donor.matchReasons.length > 0 && (
+                    <div className="mt-5">
+
+                      <p className="text-sm font-bold text-gray-700 mb-2">
+                        Why this donor matches:
+                      </p>
+
+                      <div className="space-y-1">
+
+                        {donor.matchReasons.map(
+                          (reason, index) => (
+                            <p
+                              key={index}
+                              className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg"
+                            >
+                              ✓ {reason}
+                            </p>
+                          )
+                        )}
+
+                      </div>
+
+                    </div>
+                  )}
+
+                {/* REQUEST BUTTON */}
+
+                <button
+                  onClick={() => handleBloodRequest(donor)}
+                  className="mt-5 w-full bg-red-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-red-700 transition"
+                >
+                  Send Blood Request
+                </button>
+
+              </div>
 
             </div>
           ))}
@@ -288,31 +392,61 @@ function FindDonor() {
         </div>
 
         {/* ===============================
-            REQUEST FORM
+            REQUEST FORM MODAL
         =============================== */}
 
         {selectedDonor && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
 
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
 
               <h2 className="text-2xl font-bold text-red-600 mb-2">
                 Send Blood Request
               </h2>
 
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 mb-4">
                 Requesting blood from{" "}
                 <span className="font-bold">
                   {selectedDonor.fullName}
                 </span>
               </p>
 
+              {/* MATCH INFORMATION */}
+
+              <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-6">
+
+                <div className="flex justify-between items-center">
+
+                  <div>
+                    <p className="text-xs text-gray-500">
+                      Smart Match Score
+                    </p>
+
+                    <p className="text-xl font-bold text-red-600">
+                      {selectedDonor.matchScore ?? 0}%
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500">
+                      Blood Group
+                    </p>
+
+                    <p className="font-bold text-red-600">
+                      {selectedDonor.bloodGroup}
+                    </p>
+                  </div>
+
+                </div>
+
+              </div>
+
               <form
                 onSubmit={submitBloodRequest}
                 className="space-y-4"
               >
 
-                {/* Blood Group */}
+                {/* BLOOD GROUP */}
 
                 <div>
                   <label className="block font-semibold mb-1">
@@ -327,7 +461,7 @@ function FindDonor() {
                   />
                 </div>
 
-                {/* Hospital */}
+                {/* HOSPITAL */}
 
                 <div>
                   <label className="block font-semibold mb-1">
@@ -345,7 +479,7 @@ function FindDonor() {
                   />
                 </div>
 
-                {/* Contact */}
+                {/* CONTACT */}
 
                 <div>
                   <label className="block font-semibold mb-1">
@@ -364,7 +498,7 @@ function FindDonor() {
                   />
                 </div>
 
-                {/* City */}
+                {/* CITY */}
 
                 <div>
                   <label className="block font-semibold mb-1">
@@ -382,7 +516,7 @@ function FindDonor() {
                   />
                 </div>
 
-                {/* Urgency */}
+                {/* URGENCY */}
 
                 <div>
                   <label className="block font-semibold mb-1">
@@ -414,7 +548,7 @@ function FindDonor() {
                   </select>
                 </div>
 
-                {/* Buttons */}
+                {/* BUTTONS */}
 
                 <div className="flex gap-3 pt-3">
 

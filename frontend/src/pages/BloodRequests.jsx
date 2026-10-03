@@ -5,28 +5,47 @@ function BloodRequests() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-
+  const [isError, setIsError] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      setLoggedInUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setLoggedInUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Unable to read stored user:", error);
     }
   }, []);
 
   const fetchRequests = async () => {
+    setLoading(true);
+    setMessage("");
+    setIsError(false);
+
     try {
-      const response = await api.get("/api/blood-requests");
+      const token = localStorage.getItem("token");
 
-      setRequests(response.data.requests);
+      if (!token) {
+        setIsError(true);
+        setMessage("Please login again. Login token not found.");
+        return;
+      }
+
+      const response = await api.get("/api/blood-requests", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setRequests(response.data.requests || []);
     } catch (error) {
-      console.log("❌ Blood Requests Error:", error);
-
+      console.error("Blood Requests Error:", error);
+      setIsError(true);
       setMessage(
         error.response?.data?.message ||
-          "Unable to fetch blood requests"
+          "Unable to fetch blood requests."
       );
     } finally {
       setLoading(false);
@@ -41,11 +60,15 @@ function BloodRequests() {
     try {
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        setIsError(true);
+        setMessage("Please login again. Login token not found.");
+        return;
+      }
+
       const response = await api.put(
         `/api/blood-requests/${id}/status`,
-        {
-          status,
-        },
+        { status },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,24 +76,25 @@ function BloodRequests() {
         }
       );
 
-      setMessage(response.data.message);
+      setIsError(false);
+      setMessage(response.data.message || "Request status updated.");
 
       setRequests((previousRequests) =>
         previousRequests.map((request) =>
           request._id === id
             ? {
                 ...request,
-                status: response.data.request.status,
+                status: response.data.request?.status || status,
               }
             : request
         )
       );
     } catch (error) {
-      console.log("❌ Status Update Error:", error);
-
+      console.error("Status Update Error:", error);
+      setIsError(true);
       setMessage(
         error.response?.data?.message ||
-          "Unable to update blood request status"
+          "Unable to update blood request status."
       );
     }
   };
@@ -88,7 +112,6 @@ function BloodRequests() {
   return (
     <div className="min-h-screen bg-gray-100 py-16">
       <div className="max-w-6xl mx-auto px-6">
-
         <h1 className="text-4xl font-bold text-red-600 text-center mb-3">
           Blood Requests
         </h1>
@@ -98,12 +121,16 @@ function BloodRequests() {
         </p>
 
         {message && (
-          <p className="text-center text-green-600 font-semibold mb-6">
+          <p
+            className={`text-center font-semibold mb-6 ${
+              isError ? "text-red-600" : "text-green-600"
+            }`}
+          >
             {message}
           </p>
         )}
 
-        {requests.length === 0 && !message && (
+        {!isError && requests.length === 0 && (
           <div className="bg-white rounded-2xl shadow-md p-8 text-center">
             <p className="text-gray-600">
               No blood requests available.
@@ -112,16 +139,12 @@ function BloodRequests() {
         )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
           {requests.map((request) => (
             <div
               key={request._id}
               className="bg-white rounded-2xl shadow-md p-6"
             >
-
-              {/* Header */}
               <div className="flex justify-between items-start mb-4">
-
                 <h2 className="text-xl font-bold">
                   {request.patientName}
                 </h2>
@@ -129,12 +152,9 @@ function BloodRequests() {
                 <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold">
                   {request.bloodGroup}
                 </span>
-
               </div>
 
-              {/* Details */}
               <div className="space-y-2 text-gray-600">
-
                 <p>
                   <span className="font-semibold text-gray-800">
                     Hospital:
@@ -173,43 +193,36 @@ function BloodRequests() {
                     {request.status}
                   </span>
                 </p>
-
               </div>
 
-              {/* Admin Controls */}
               {loggedInUser?.role === "Admin" && (
                 <div className="mt-5 flex gap-3">
-
                   <button
                     onClick={() =>
-                      handleStatusChange(
-                        request._id,
-                        "Fulfilled"
-                      )
+                      handleStatusChange(request._id, "Fulfilled")
                     }
-                    className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+                    disabled={request.status === "Fulfilled"}
+                    className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-50"
                   >
                     Fulfilled
                   </button>
 
                   <button
                     onClick={() =>
-                      handleStatusChange(
-                        request._id,
-                        "Cancelled"
-                      )
+                      handleStatusChange(request._id, "Cancelled")
                     }
-                    className="flex-1 bg-gray-600 text-white py-2 rounded-lg font-semibold hover:bg-gray-700 transition"
+                    disabled={
+                      request.status === "Cancelled" ||
+                      request.status === "Fulfilled"
+                    }
+                    className="flex-1 bg-gray-600 text-white py-2 rounded-lg font-semibold hover:bg-gray-700 transition disabled:opacity-50"
                   >
                     Cancel
                   </button>
-
                 </div>
               )}
-
             </div>
           ))}
-
         </div>
       </div>
     </div>

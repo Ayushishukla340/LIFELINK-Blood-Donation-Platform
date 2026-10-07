@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="12 4 76 96">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 2 80 98">
   <defs>
-    <linearGradient id="bloodGrad" x1="15%" y1="0%" x2="85%" y2="100%">
-      <stop offset="0%" stop-color="#ff3333" />
-      <stop offset="55%" stop-color="#dc2626" />
+    <linearGradient id="bloodGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#ff334b" />
+      <stop offset="45%" stop-color="#dc2626" />
       <stop offset="100%" stop-color="#881337" />
     </linearGradient>
   </defs>
-  <!-- Enlarged blood drop shape covering full viewBox -->
-  <path d="M 50 4 C 50 4, 12 50, 12 69 C 12 89, 29 100, 50 100 C 71 100, 88 89, 88 69 C 88 50, 50 4, 50 4 Z" fill="url(#bloodGrad)" />
-  <!-- Glossy 3D light reflection -->
-  <path d="M 33 44 C 26 54, 25 68, 33 78 C 34.5 79.5, 33.5 81.2, 31 80 C 23 74, 21 59, 27 45 C 28.5 41, 34.5 41.5, 33 44 Z" fill="#ffffff" opacity="0.7" />
+  <!-- Blood Drop Shape -->
+  <path d="M 50 3 C 50 3, 12 50, 12 69 C 12 89.5, 29 100, 50 100 C 71 100, 88 89.5, 88 69 C 88 50, 50 3, 50 3 Z" fill="url(#bloodGrad)" />
+  <!-- Glossy 3D curved reflection -->
+  <path d="M 32 44 C 25 54, 24 68, 32 78 C 33.5 79.5, 32.5 81.2, 30 80 C 22 74, 20 59, 26 45 C 27.5 41, 33.5 41.5, 32 44 Z" fill="#ffffff" opacity="0.75" />
   <!-- Secondary soft light -->
   <ellipse cx="66" cy="80" rx="8" ry="4" transform="rotate(-30 66 80)" fill="#ffffff" opacity="0.35" />
 </svg>

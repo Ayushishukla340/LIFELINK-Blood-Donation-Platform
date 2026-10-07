@@ -1,92 +1,162 @@
-# 🩸 LifeLink — Blood Donation Platform
+# 🩸 LifeLink — Next-Gen Blood Donation Platform
 
 <p align="center">
-  <strong>Connecting blood donors with patients through a full-stack web application.</strong>
+  <img src="https://img.shields.io/badge/Status-Live%20Project-success?style=for-the-badge&logo=vercel" alt="Status" />
+  <img src="https://img.shields.io/badge/Stack-MERN-critical?style=for-the-badge&logo=react" alt="Stack" />
+  <img src="https://img.shields.io/badge/License-Academic%20Project-informational?style=for-the-badge" alt="License" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Frontend-React-61DAFB?logo=react&logoColor=black" alt="React">
-  <img src="https://img.shields.io/badge/Backend-Node.js-339933?logo=nodedotjs&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/API-Express-000000?logo=express&logoColor=white" alt="Express">
-  <img src="https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb&logoColor=white" alt="MongoDB">
-  <img src="https://img.shields.io/badge/License-Academic%20Project-blue" alt="Academic project">
+  <strong>An end-to-end blood donation lifecycle platform connecting patients in urgent need with eligible life-saving donors through real-time matching, in-app chat, OTP-verified donations, and QR-verifiable certificates.</strong>
 </p>
 
-LifeLink is a full-stack blood donation platform built to help patients discover potential blood donors, submit blood requests, and follow request updates. It provides separate workflows for donors, patients, and administrators.
+<p align="center">
+  <a href="#-interactive-demo--testing-guide-for-reviewers">🎮 Testing Guide</a> •
+  <a href="#-key-features">✨ Key Features</a> •
+  <a href="#-workflow-architecture">🔄 Workflow</a> •
+  <a href="#-tech-stack">🛠️ Tech Stack</a> •
+  <a href="#-quick-start">🚀 Quick Start</a> •
+  <a href="#-api-reference">📡 API Reference</a> •
+  <a href="#-author">👩‍💻 Author</a>
+</p>
 
-## Contents
+---
 
-- [Project Overview](#-project-overview)
-- [Features](#-features)
-- [Technology Stack](#-technology-stack)
-- [Architecture](#-architecture)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
-- [Environment Configuration](#-environment-configuration)
-- [Security Notes](#-security-notes)
-- [Documentation](#-documentation)
-- [Future Enhancements](#-future-enhancements)
-- [Author](#-author)
+## 🎮 Interactive Demo & Testing Guide (For Reviewers)
 
-## 🎯 Project Overview
+> [!TIP]
+> **Visiting the Live Deployment on Vercel / Cloud?**  
+> To test all multi-user features (Requesting -> Accepting -> Real-Time Chat -> Certificate Generation -> Admin Controls) without creating fresh accounts from scratch, follow the 3-minute evaluation walkthrough below!
 
-Finding a suitable blood donor quickly can be challenging. LifeLink brings donor discovery and blood request coordination into one web application.
+### 🔑 Recommended Demo Roles
 
-The project demonstrates a client-server architecture with a React frontend, an Express REST API, and MongoDB for persistent data storage.
+| Role | Suggested Email | Password | Primary Capabilities to Test |
+| :--- | :--- | :--- | :--- |
+| **🩸 Blood Donor** | `donor@demo.com` | `donor123` | View nearby requests, accept blood requests, real-time chat with patient, download verified certificates, manage availability & reward points. |
+| **🧑‍⚕️ Patient / Recipient** | `patient@demo.com` | `patient123` | Post regular & Emergency SOS blood requests, track real-time fulfillment status, chat with donor, verify donation via OTP. |
+| **🛡️ Administrator** | `admin@demo.com` | `admin123` | Inspect complete platform analytics, moderate all blood requests, view registered donors/patients, manage system records. |
 
-## ✨ Features
+*(Note: If testing on an unseeded fresh database, simply register two accounts with the "Blood Donor" and "Patient" roles in 30 seconds).*
 
-- **Authentication:** registration and login workflows.
-- **Role-based access:** separate donor, patient, and administrator experiences.
-- **Donor discovery:** search and filter donors using blood group and city.
-- **Blood requests:** submit and track requests for required blood groups.
-- **Donor response workflow:** donors can respond to eligible requests.
-- **Notifications:** keep users informed about relevant request updates.
-- **Availability management:** donors can manage their availability.
-- **Request administration:** administrative workflows for reviewing and updating request status.
-- **Profile management:** user profile information and account-specific views.
-- **Responsive interface:** a web UI built with React and Tailwind CSS.
+---
 
-Feature availability can depend on the current application configuration and user role.
+### ⏱️ 3-Minute End-to-End Walkthrough
 
-## 🛠️ Technology Stack
+To experience the complete LifeLink pipeline, open **two browser windows** (or one normal window and one **Incognito window**):
 
-| Layer | Technologies |
-|---|---|
-| Frontend | React, Vite, Tailwind CSS |
-| Routing | React Router |
-| HTTP communication | Axios |
-| Backend | Node.js, Express.js |
-| Database | MongoDB, MongoDB Atlas |
-| Data modelling | Mongoose |
-| Authentication | JSON Web Tokens (JWT) |
-| Password security | bcrypt |
-| Version control | Git and GitHub |
-
-## 🏗️ Architecture
-
-```text
-User
- |
- v
-React Frontend (Vite)
- |
- | HTTP / Axios
- v
-Express REST API
- |
- | Authentication and authorization
- v
-Application Routes and Middleware
- |
- v
-Mongoose Models
- |
- v
-MongoDB
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Patient as 🧑‍⚕️ Patient Window
+    actor Donor as 🩸 Donor Window
+    actor Admin as 🛡️ Admin
+    
+    Patient->>Patient: Creates Blood Request / Emergency SOS
+    Donor->>Donor: Sees eligible request in "Donor Requests" & accepts it
+    Patient->>Donor: In-app Chat unlocks between Patient & Donor
+    Donor->>Patient: Real-time messaging to coordinate hospital visit
+    Patient->>Donor: Completes donation & provides verification OTP
+    Donor->>Donor: Receives Digital Certificate with unique ID & QR code
+    Donor->>Patient: Scans QR to verify certificate on `/verify-certificate/:certId`
+    Admin->>Admin: Monitors life-saving stats on Admin Dashboard
 ```
 
-The frontend handles user interaction, the backend validates requests and applies application rules, and MongoDB stores application data.
+1. **Step 1: Patient posts a request**  
+   - Login as **Patient** in Window 1.
+   - Go to **Request Blood** (`/request-blood`), fill in hospital details, blood group (e.g. `O+`), city, and urgency (Normal / Urgent / Emergency SOS).
+   - The request is saved and broadcasted to eligible donors.
+
+2. **Step 2: Donor discovers & accepts request**  
+   - Login as **Donor** in Window 2 (Incognito).
+   - Go to **Donor Requests** (`/donor-requests`). Filter by city/blood group.
+   - Click **Accept Request** on the newly created request.
+
+3. **Step 3: In-App Chat & Coordination**  
+   - The **Chat Modal / Chat Room** (`/chat/:requestId`) opens up between the donor and patient.
+   - Exchange messages to coordinate the blood bank / hospital meeting in real-time.
+
+4. **Step 4: Donation Completion & Digital Certificate**  
+   - Once fulfilled, complete the donation with OTP verification.
+   - The donor earns **LifeLink Reward Points** and receives an official **Certificate of Appreciation**.
+   - Download the high-res certificate as a **PDF/Image** (generated client-side via `html2canvas` & `jspdf`).
+   - Open `/verify-certificate/:certId` or scan the generated **QR Code** to verify authenticity!
+
+5. **Step 5: Admin Oversight**  
+   - Access `/admin` to inspect system health, manage all requests, and review donor distributions.
+
+---
+
+## ✨ Key Features
+
+### 🩸 Core Blood Coordination
+- **Instant Donor Discovery:** Search and filter available donors by blood group (`A+`, `A-`, `B+`, `B-`, `O+`, `O-`, `AB+`, `AB-`) and location/city.
+- **Urgency & Emergency SOS:** Color-coded urgency levels (`Normal`, `Urgent`, `Emergency SOS`) for prioritizing critical intensive-care needs.
+- **Availability Toggle:** Donors can switch status between `Available`, `Temporarily Unavailable`, and `Not Available`.
+
+### 💬 Real-Time In-App Chat
+- Dedicated request-specific chat channels linking matched donors directly to patients.
+- Keeps private contact info secure while enabling seamless hospital coordination.
+
+### 📜 Automated Verifiable Certificates
+- **Dynamic PDF/Image Generation:** Instant certificate generation for donors upon successful donation.
+- **Cryptographic / Unique QR Verification:** Built-in QR codes linking to `/verify-certificate/:certId` to authenticate legitimate donations for academic/work recognition.
+- **Gamified Rewards:** Donors earn points and milestone recognition for repeated blood donations.
+
+### 🛡️ Administrative Command Center
+- Role-protected routes (`AdminRoute`).
+- Visual overview of pending, accepted, rejected, and fulfilled requests.
+- User management and platform auditing.
+
+### 🎨 Modern & Accessible UI
+- Built with **React 19**, **Vite**, and **Tailwind CSS v4**.
+- Full **Dark Mode / Light Mode** theme switching with persistent user preference.
+- Animated dynamic impact statistics using `react-countup`.
+- Fully responsive across mobile, tablet, and desktop screens.
+
+---
+
+## 🛠️ Tech Stack
+
+| Domain | Technology / Library | Purpose |
+| :--- | :--- | :--- |
+| **Frontend Framework** | React 19 + Vite 8 | Ultra-fast client-side rendering & optimized bundling |
+| **Styling & Design** | Tailwind CSS v4, React Icons | Modern responsive design with glassmorphism & dark mode |
+| **Routing** | React Router DOM v7 | Client-side routing, protected routes & URL parameter matching |
+| **Certificate Engine** | html2canvas, jsPDF, qrcode.react | Client-side vector certificate rendering & QR verification |
+| **Backend Runtime** | Node.js + Express.js 5 | Scalable RESTful API architecture |
+| **Database & ODM** | MongoDB Atlas + Mongoose 8 | Document-oriented storage, schema validation & population |
+| **Authentication** | JWT (JSON Web Tokens) + bcrypt | Secure stateless authentication and hashed passwords |
+| **HTTP Client** | Axios | Intercepted API calls with authorization bearer token passing |
+
+---
+
+## 🏗️ Architecture & Data Flow
+
+```text
+       ┌────────────────────────────────────────────────────────┐
+       │                   LifeLink Client UI                  │
+       │  (React 19, Tailwind CSS v4, Context API, Theme engine) │
+       └───────────────────────────┬────────────────────────────┘
+                                   │  HTTP Requests (Axios + JWT)
+                                   ▼
+       ┌────────────────────────────────────────────────────────┐
+       │                  Express 5 REST API                    │
+       │  - authMiddleware (JWT verification)                   │
+       │  - adminMiddleware (Role authorization)                │
+       └───────────────────────────┬────────────────────────────┘
+                                   │  Mongoose ODM
+                                   ▼
+       ┌────────────────────────────────────────────────────────┐
+       │                     MongoDB Atlas                      │
+       │  - Users (Donors, Patients, Admins)                    │
+       │  - BloodRequests (Status, Urgency, Verification OTP)   │
+       │  - Messages (Donor-Patient chat logs)                  │
+       │  - Certificates (Unique CertId, QR metadata)           │
+       │  - Notifications                                       │
+       └────────────────────────────────────────────────────────┘
+```
+
+---
 
 ## 📁 Project Structure
 
@@ -94,123 +164,123 @@ The frontend handles user interaction, the backend validates requests and applie
 LIFELINK-Blood-Donation-Platform/
 ├── Backend/
 │   ├── middleware/
+│   │   ├── adminMiddleware.js       # Admin role validation
+│   │   └── authMiddleware.js        # JWT token extraction & verification
 │   ├── models/
-│   ├── server.js
-│   └── package.json
+│   │   ├── Certificate.js           # Certificate schema & unique certId
+│   │   ├── Message.js               # In-app chat messages
+│   │   ├── Notification.js          # Activity notifications
+│   │   ├── Request.js               # Blood request & OTP verification
+│   │   └── User.js                  # Donor/Patient/Admin model & bcrypt hook
+│   ├── server.js                    # Express app, routes & controllers
+│   ├── package.json
+│   └── .env.example
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
+│   │   ├── assets/                  # Illustrations & brand assets
+│   │   ├── components/              # Shared UI components, Navbar, Footer, Modals
+│   │   ├── context/                 # ThemeContext (Dark/Light mode)
 │   │   ├── pages/
-│   │   └── services/
+│   │   │   ├── Home.jsx             # Landing page with live impact counter
+│   │   │   ├── FindDonor.jsx        # Search donors by blood group & city
+│   │   │   ├── RequestBlood.jsx     # Submit emergency & regular requests
+│   │   │   ├── DonorRequests.jsx    # Donor portal to accept requests
+│   │   │   ├── ChatPage.jsx         # Real-time coordination room
+│   │   │   ├── Dashboard.jsx        # User profile, history & rewards
+│   │   │   ├── AdminDashboard.jsx   # Admin statistics & moderation
+│   │   │   └── VerifyCertificate/   # Public QR verification route
+│   │   ├── services/
+│   │   │   └── api.js               # Axios instance with baseUrl & auth interceptor
+│   │   ├── App.jsx                  # Master route configuration
+│   │   └── main.jsx
 │   ├── package.json
 │   └── vite.config.js
-├── docs/
-│   ├── ARCHITECTURE.md
-│   └── FEATURES.md
-├── .gitignore
 └── README.md
 ```
 
-Some local files may differ as the project evolves.
+---
 
-## 🚀 Getting Started
+## 🚀 Quick Start (Local Setup)
 
 ### Prerequisites
-
-- Node.js and npm
-- A MongoDB database, such as MongoDB Atlas
-- Git
+- [Node.js](https://nodejs.org/) (v18.0.0 or higher)
+- [Git](https://git-scm.com/)
+- A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster connection string
 
 ### 1. Clone the repository
-
 ```bash
 git clone https://github.com/Ayushishukla340/LIFELINK-Blood-Donation-Platform.git
 cd LIFELINK-Blood-Donation-Platform
 ```
 
-### 2. Install backend dependencies
-
+### 2. Configure Backend
 ```bash
 cd Backend
 npm install
 ```
 
-### 3. Configure environment variables
-
-Create a `.env` file inside `Backend/`. Add the environment variables expected by the backend code, including the server port, MongoDB connection string, and JWT secret.
-
-See [Environment Configuration](#-environment-configuration).
-
-### 4. Start the backend
-
-Use the start script defined in `Backend/package.json`. For example, if the project has a `dev` script:
-
-```bash
-npm run dev
+Create a `.env` file in the `Backend/` directory:
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/lifelink?retryWrites=true&w=majority
+JWT_SECRET=your_super_secret_jwt_key_here
 ```
 
-The backend has been configured to use port `5000` in the current development setup.
+Start the backend API server:
+```bash
+npm run dev
+# Server runs at http://localhost:5000
+```
 
-### 5. Start the frontend
-
-Open a second terminal from the project root:
-
+### 3. Configure Frontend
+Open a new terminal window:
 ```bash
 cd frontend
 npm install
 npm run dev
+# Client runs at http://localhost:5173
 ```
 
-Open the local address printed by Vite, commonly `http://localhost:5173`.
+---
 
-Keep the backend and frontend running in separate terminals during local development.
+## 📡 Key API Endpoints
 
-## 🔐 Environment Configuration
+### 🔐 Authentication
+- `POST /api/register` — Register a new user (`Blood Donor`, `Patient`, `Admin`)
+- `POST /api/login` — Authenticate and receive signed JWT token
+- `GET /api/me` — Retrieve logged-in profile data
 
-Keep credentials out of source control. Typical backend configuration includes:
+### 🩸 Blood Requests & Matching
+- `POST /api/requests` — Create a new blood request (Patient)
+- `GET /api/requests` — Fetch requests (filterable by city & blood group)
+- `PUT /api/requests/:id/accept` — Accept request (Donor)
+- `POST /api/requests/:id/verify-otp` — Verify donation completion via OTP
 
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=replace_with_a_long_random_secret
-```
+### 💬 Messaging & Chat
+- `GET /api/chat/:requestId` — Retrieve conversation history for a matched request
+- `POST /api/chat/:requestId` — Send a message in request room
 
-Use the exact variable names expected by your current backend. Never publish real database credentials, tokens, or secret keys.
+### 📜 Certificates & Verification
+- `GET /api/certificates/my-certificates` — Retrieve donor certificates
+- `GET /api/certificates/verify/:certId` — Public lookup to verify certificate authenticity
 
-## 🔒 Security Notes
+### 🛡️ Administration
+- `GET /api/admin/stats` — Platform-wide aggregation metrics
+- `GET /api/admin/users` — User audit & moderation
+- `PUT /api/admin/requests/:id/status` — Modify request state
 
-- Passwords should be stored as hashes, not plain text.
-- Protected API routes should validate authentication tokens.
-- Administrative actions should require appropriate authorization.
-- Validate user input on the server.
-- Keep `.env` files out of Git commits.
-- Use HTTPS and production-grade secret management when deploying.
-
-## 📚 Documentation
-
-- [Architecture Overview](docs/ARCHITECTURE.md)
-- [Feature Guide](docs/FEATURES.md)
-
-## 🔮 Future Enhancements
-
-- AI-assisted donor recommendations.
-- Blood demand forecasting.
-- Hospital and blood-bank integration.
-- Deployment with a public demo URL.
-- Expanded automated testing and monitoring.
-
-These are proposed enhancements and should not be interpreted as already implemented.
+---
 
 ## 👩‍💻 Author
 
-**Ayushi Shukla**
-B.Tech — Computer Science and Engineering (Artificial Intelligence)
-Babu Banarasi Das University, Lucknow
+**Ayushi Shukla**  
+*B.Tech in Computer Science and Engineering (Artificial Intelligence)*  
+*Babu Banarasi Das University, Lucknow*  
 
-- GitHub: [@Ayushishukla340](https://github.com/Ayushishukla340)
+- **GitHub:** [@Ayushishukla340](https://github.com/Ayushishukla340)
 
 ---
 
 <p align="center">
-  Built as an academic full-stack project to support blood donation coordination.
+  Made with ❤️ to bridge the gap between blood donors and lives in need.
 </p>

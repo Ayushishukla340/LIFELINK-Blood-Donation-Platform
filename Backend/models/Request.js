@@ -17,13 +17,15 @@ const requestSchema = new mongoose.Schema(
     donorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
+      default: null,
     },
 
     donorName: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
+      default: null,
     },
 
     bloodGroup: {
@@ -66,6 +68,31 @@ const requestSchema = new mongoose.Schema(
         "Cancelled",
       ],
       default: "Pending",
+    },
+
+    isEmergencySOS: {
+      type: Boolean,
+      default: false,
+    },
+
+    verificationOtp: {
+      type: String,
+      default: null,
+    },
+
+    isOtpVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    otpVerifiedAt: {
+      type: Date,
+      default: null,
+    },
+
+    isFreePrivilege: {
+      type: Boolean,
+      default: false,
     },
   },
   {

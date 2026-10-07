@@ -30,19 +30,19 @@ const steps = [
 
 function HowItWorks() {
   return (
-    <section className="bg-red-50 py-24">
+    <section className="bg-red-50/60 dark:bg-slate-950 py-24 transition-colors">
       <div className="max-w-7xl mx-auto px-8">
 
         <div className="text-center mb-16">
-          <p className="text-red-600 font-semibold uppercase tracking-widest">
+          <p className="text-red-600 dark:text-red-400 font-semibold uppercase tracking-widest">
             Simple Process
           </p>
 
-          <h2 className="text-5xl font-bold mt-4">
+          <h2 className="text-5xl font-bold mt-4 text-slate-900 dark:text-slate-100">
             How LifeLink Works
           </h2>
 
-          <p className="text-gray-600 mt-5 max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 mt-5 max-w-2xl mx-auto">
             Register, search for verified donors, donate blood, and
             become a hero by saving lives.
           </p>
@@ -53,17 +53,17 @@ function HowItWorks() {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="bg-white rounded-3xl p-8 shadow-md hover:shadow-xl transition-all text-center"
+              className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 shadow-md hover:shadow-xl dark:shadow-slate-950/60 transition-all text-center"
             >
-              <div className="w-20 h-20 mx-auto rounded-full bg-red-100 flex items-center justify-center text-4xl text-red-600">
+              <div className="w-20 h-20 mx-auto rounded-full bg-red-100 dark:bg-red-950/50 flex items-center justify-center text-4xl text-red-600 dark:text-red-400">
                 {step.icon}
               </div>
 
-              <h3 className="text-2xl font-bold mt-6">
+              <h3 className="text-2xl font-bold mt-6 text-slate-900 dark:text-slate-100">
                 {step.title}
               </h3>
 
-              <p className="text-gray-600 mt-4 leading-7">
+              <p className="text-slate-600 dark:text-slate-400 mt-4 leading-7">
                 {step.description}
               </p>
             </div>

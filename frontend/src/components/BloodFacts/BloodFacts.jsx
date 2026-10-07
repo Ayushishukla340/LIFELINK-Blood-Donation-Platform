@@ -3,21 +3,21 @@ import Card from "../Card/Card";
 
 function BloodFacts() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white dark:bg-slate-900/50 py-24 transition-colors">
       <div className="max-w-7xl mx-auto px-8">
 
         {/* Heading */}
         <div className="text-center mb-16">
 
-          <p className="text-red-600 font-semibold uppercase tracking-widest">
+          <p className="text-red-600 dark:text-red-400 font-semibold uppercase tracking-widest">
             Learn & Donate
           </p>
 
-          <h2 className="text-5xl font-bold mt-4 text-gray-900">
+          <h2 className="text-5xl font-bold mt-4 text-slate-900 dark:text-slate-100">
             Blood Donation Facts
           </h2>
 
-          <p className="text-gray-600 text-lg mt-5 max-w-3xl mx-auto leading-8">
+          <p className="text-slate-600 dark:text-slate-400 text-lg mt-5 max-w-3xl mx-auto leading-8">
             Blood donation is one of the simplest ways to save lives.
             Every donation can help patients during surgeries,
             accidents, cancer treatment, and medical emergencies.

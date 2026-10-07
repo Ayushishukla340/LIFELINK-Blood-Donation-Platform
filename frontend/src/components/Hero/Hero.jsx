@@ -1,3 +1,5 @@
+import heroBloodImg from "../../assets/blood-donation-hero.png";
+
 function Hero() {
   return (
     <section className="bg-gradient-to-r from-red-50 to-white min-h-[85vh] flex items-center">
@@ -73,17 +75,14 @@ function Hero() {
           </div>
 
           {/* Right Side */}
-
           <div className="flex justify-center">
-
-            <div className="w-[500px] h-[500px] rounded-full bg-red-100 flex items-center justify-center shadow-2xl">
-
-              <div className="text-[180px] animate-pulse">
-                🩸
-              </div>
-
+            <div className="relative w-full max-w-[500px] overflow-hidden rounded-3xl border-2 border-red-200 shadow-2xl">
+              <img
+                src={heroBloodImg}
+                alt="Donate Blood - Hands holding a blood drop"
+                className="w-full h-auto object-cover"
+              />
             </div>
-
           </div>
 
         </div>

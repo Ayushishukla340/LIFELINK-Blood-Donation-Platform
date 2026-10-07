@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext";
 import DonorRequests from "./pages/DonorRequests";
 
 import Layout from "./components/Layout/Layout";
@@ -16,11 +17,14 @@ import Dashboard from "./pages/Dashboard";
 import MyRequests from "./pages/MyRequests";
 import AdminDashboard from "./pages/AdminDashboard";
 import BloodRequests from "./pages/BloodRequests";
+import ChatPage from "./pages/ChatPage";
+import VerifyCertificate from "./pages/VerifyCertificate/VerifyCertificate";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
 
         <Route path="/" element={<Layout />}>
 
@@ -33,14 +37,19 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="my-requests" element={<MyRequests />} />
+          <Route path="verify-certificate/:certId" element={<VerifyCertificate />} />
 
           {/* User Pages */}
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="my-requests" element={<MyRequests />} />
           <Route path="donor-requests" element={<DonorRequests />} />
+          <Route path="chat/:requestId" element={<ChatPage />} />
 
-          {/* Admin Pages */}
+          {/* Admin Pages (Accessible via /admin or /admin-dashboard) */}
           <Route element={<AdminRoute />}>
+            <Route
+              path="admin"
+              element={<AdminDashboard />}
+            />
             <Route
               path="admin-dashboard"
               element={<AdminDashboard />}
@@ -52,10 +61,14 @@ function App() {
             element={<BloodRequests />}
           />
 
+          {/* Catch-all 404 fallback - redirects to home instead of blank page */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+
         </Route>
 
       </Routes>
     </BrowserRouter>
+  </ThemeProvider>
   );
 }
 

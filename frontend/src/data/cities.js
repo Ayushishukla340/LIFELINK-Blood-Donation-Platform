@@ -1,0 +1,27 @@
+export const CITIES = [
+  "Agra",
+  "Ahmedabad",
+  "Ballia",
+  "Bengaluru",
+  "Bhopal",
+  "Chandigarh",
+  "Chennai",
+  "Delhi",
+  "Faridabad",
+  "Ghaziabad",
+  "Gonda",
+  "Gorakhpur",
+  "Gurugram",
+  "Hardoi",
+  "Kalpi",
+  "Kanpur",
+  "Kolkata",
+  "Lucknow",
+  "Mumbai",
+  "Nagpur",
+  "Pune",
+  "Varanasi",
+  "Visakhapatnam",
+];
+
+export default CITIES;
